@@ -19,6 +19,7 @@ public class Wordle {
 				break;
 			case 2:
 			    Partida partida = new Partida();
+			    jugar(partida);
 			    break;
 			case 3: 
 				
@@ -32,5 +33,34 @@ public class Wordle {
 			}
 		}while(opcion != 0);	
 	}
+	
+	public static void jugar(Partida partida) {
+	    Scanner sc = new Scanner(System.in);
+	    String respuesta = "";
+
+	    System.out.println("Comienza la partida. Escribe 'salir' para volver al menú.");
+
+	    while (true) {
+
+	        System.out.print("Introduce una palabra de 5 letras: ");
+	        respuesta = sc.nextLine();
+
+	        if (respuesta.equals("salir")) {
+	            System.out.println("Volviendo al menú...");
+	            break;
+	        }
+
+	        if (respuesta.length() != 5) {
+	            System.out.println("La palabra debe tener 5 letras.");
+	            continue;
+	        }
+
+	        String resultado = partida.comprobarIntento(respuesta);
+
+	        System.out.println(resultado);
+	        System.out.println("Te quedan " + partida.getVida() + " intentos.");
+	    }
+	}
+
 
 }

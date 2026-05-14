@@ -1,4 +1,4 @@
-package JuegoWordle;
+package Juego;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -130,11 +130,11 @@ public class Partida implements Serializable {
 		//salta mensaje de que ha perdido la partida.
 		if (intento.equals(palabraSecreta)) {
 			sumarPuntos();
-			System.out.println("¡Correcto! Tienes " + getPuntuacion() + " puntos");
+			System.out.println("¡Correcto! Tienes " + puntuacion + " puntos");
 			System.out.println("Ahora jugamos con una nueva palabra secreta...");
 			obtenerPalabraSecreta();
 		} else {
-				vida--;
+			vida--;
 		}
 
 		if (vida == 0) {
