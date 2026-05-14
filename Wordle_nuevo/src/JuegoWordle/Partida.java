@@ -1,10 +1,12 @@
-package JuegoWordle;
+package Juego;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class Partida implements Serializable {
@@ -42,5 +44,11 @@ public class Partida implements Serializable {
 			}
 		}
 	}
+	
+    public String obtenerPalabraSecreta() {
+        ArrayList<String> lista = new ArrayList<>(palabras);
+        Collections.shuffle(lista);
+        return lista.get(0);
+    }
 
 }
