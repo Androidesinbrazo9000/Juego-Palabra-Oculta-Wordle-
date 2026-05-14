@@ -11,12 +11,18 @@ import java.util.HashSet;
 
 public class Partida implements Serializable {
 
-
-	private int puntuacion;
+	private String palabraSecreta;
+	private int puntuacion = 0;
+	private int vida = 6;
 	private HashSet<String> palabras = new HashSet<>();
 	
 	public Partida () {
 		cargarPalabras();
+		this.palabraSecreta = obtenerPalabraSecreta();
+	}
+	
+	public int getVida() {
+		return this.vida;
 	}
 
 	public void cargarPalabras () {

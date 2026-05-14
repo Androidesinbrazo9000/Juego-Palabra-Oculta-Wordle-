@@ -19,9 +19,6 @@ public class Wordle {
 				break;
 			case 2:
 			    Partida partida = new Partida();
-			    String palabraSecreta = partida.obtenerPalabraSecreta();
-			    //Luego lo quitamos, es para ver que funciona.
-			    System.out.println("La palabra secreta es: " + palabraSecreta);
 			    break;
 			case 3: 
 				
