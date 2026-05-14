@@ -1,66 +1,91 @@
 package JuegoWordle;
 import java.util.Scanner;
+
 public class Wordle {
 
-	public static void main (String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int opcion;
+    public static void main (String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int opcion;
 
-		do {
-			System.out.println("1- Cargar partida");
-			System.out.println("2- Nueva partida");
-			System.out.println("3- Consultar puntuaciones");
-			System.out.println("0- Salir");
-			opcion = sc.nextInt();
+        do {
+            System.out.println("1- Cargar partida");
+            System.out.println("2- Nueva partida");
+            System.out.println("3- Consultar puntuaciones");
+            System.out.println("0- Salir");
+            opcion = sc.nextInt();
+            sc.nextLine(); // limpiar buffer
 
-			switch(opcion) {
-			case 1:
+            switch(opcion) {
+            case 1:
 
-				break;
-			case 2:
-			    Partida partida = new Partida();
-			    jugar(partida);
-			    break;
-			case 3: 
-				
-				break;
-			case 0: 
-				System.out.println("Saliendo del juego. ¡Gracias por jugar!");
-				break;
-			default:
-				System.out.println("Esa opción no es válida, introduce una que sea correcta.");
-				break;
-			}
-		}while(opcion != 0);	
-	}
-	
-	public static void jugar(Partida partida) {
-	    Scanner sc = new Scanner(System.in);
-	    String respuesta = "";
+                break;
 
-	    System.out.println("Comienza la partida. Escribe 'salir' para volver al menú.");
+            case 2:
+                Partida partida = new Partida();
+                jugar(partida);
+                break;
 
-	    while (true) {
+            case 3: 
+                
+                break;
 
-	        System.out.print("Introduce una palabra de 5 letras: ");
-	        respuesta = sc.nextLine();
+            case 0: 
+                System.out.println("Saliendo del juego. ¡Gracias por jugar!");
+                break;
 
-	        if (respuesta.equals("salir")) {
-	            System.out.println("Volviendo al menú...");
-	            break;
-	        }
+            default:
+                System.out.println("Esa opción no es válida, introduce una que sea correcta.");
+                break;
+            }
+        }while(opcion != 0);    
+    }
 
-	        if (respuesta.length() != 5) {
-	            System.out.println("La palabra debe tener 5 letras.");
-	            continue;
-	        }
+    public static void jugar(Partida partida) {
+        Scanner sc = new Scanner(System.in);
+        String respuesta = "";
 
-	        String resultado = partida.comprobarIntento(respuesta);
+        System.out.println("Comienza la partida. Escribe 'salir' para volver al menú.");
 
-	        System.out.println(resultado);
-	        System.out.println("Te quedan " + partida.getVida() + " intentos.");
-	    }
-	}
+        while (true) {
 
+            System.out.print("Introduce una palabra de 5 letras: ");
+            respuesta = sc.nextLine().toLowerCase();
 
+            if (respuesta.equals("salir")) {
+                System.out.println("Volviendo al menú...");
+                break;
+            }
+
+            if (respuesta.length() != 5) {
+                System.out.println("La palabra debe tener 5 letras.");
+                continue;
+            }
+
+            String resultado = partida.comprobarIntento(respuesta);
+
+            System.out.println(resultado);
+
+            System.out.println("Te quedan " + partida.getVida() + " intentos.");
+
+            if (partida.haAcertado(respuesta)) {
+                int puntosGanados = partida.getVida() * 100;
+                partida.sumarPuntos();
+
+                System.out.println("¡Correcto! Tienes " + puntosGanados + " puntos en esta palabra.");
+                System.out.println("Puntuación total: " + partida.getPuntuacion());
+                System.out.println("Ahora jugamos con una nueva palabra secreta...");
+
+                partida.nuevaPalabra();
+                continue;
+            }
+
+            if (partida.sinVidas()) {
+                System.out.println("Has perdido. La palabra era: " + partida.getPalabraSecreta());
+                System.out.println("Puntuación total: " + partida.getPuntuacion());
+                System.out.println("Ahora jugamos con una nueva palabra secreta...");
+
+                partida.nuevaPalabra();
+            }
+        }
+    }
 }
