@@ -10,26 +10,27 @@ import java.util.Collections;
 import java.util.HashSet;
 
 public class Partida implements Serializable {
+    private static final long serialVersionUID = 1L; // Recomendado para Serializable
 
     private String palabraSecreta;
     private int puntuacion = 0;
     private int vida = 6;
     private HashSet<String> palabras = new HashSet<>();
 
-    public Partida () {
+    public Partida() {
         cargarPalabras();
         this.palabraSecreta = obtenerPalabraSecreta();
     }
 
-    public int getPuntuacion () {
+    public int getPuntuacion() {
         return this.puntuacion;
     }
 
-    public int getVida () {
+    public int getVida() {
         return this.vida;
     }
 
-    public String getPalabraSecreta () {
+    public String getPalabraSecreta() {
         return this.palabraSecreta;
     }
 
@@ -50,96 +51,92 @@ public class Partida implements Serializable {
         return vida <= 0;
     }
 
-    public void cargarPalabras () {
+    public void cargarPalabras() {
         BufferedReader br = null;
-        String [] arrayPalabras;
+        String[] arrayPalabras;
 
         try {
-            br = new BufferedReader(new FileReader ("Palabras.txt"));
+            // REQUISITO: Nombre exacto del archivo exigido
+            br = new BufferedReader(new FileReader("Palabras5L.txt"));
             String linea = br.readLine();
-            arrayPalabras = linea.split(",");
-            for (int i = 0; i < arrayPalabras.length; i++) {
-                arrayPalabras[i] = arrayPalabras[i].trim().toLowerCase();
-                palabras.add(arrayPalabras[i]);
+            if (linea != null) {
+                arrayPalabras = linea.split(",");
+                for (int i = 0; i < arrayPalabras.length; i++) {
+                    palabras.add(arrayPalabras[i].trim().toLowerCase());
+                }
             }
         } catch (FileNotFoundException ex) {
-            System.out.println("No se han podido encontrar las palabras secretas.");
+            System.out.println("No se ha podido encontrar el archivo Palabras5L.txt.");
         } catch (IOException ex) {
-            System.out.println("Error.");
+            System.out.println("Error al leer las palabras.");
         } finally {
             try {
-                if (br != null)
-                    br.close();
+                if (br != null) br.close();
             } catch (IOException ex) {
-                System.out.println("Error en el cierre del BR.");
+                System.out.println("Error en el cierre del lector.");
             }
         }
     }
 
     public String obtenerPalabraSecreta() {
+        if (palabras.isEmpty()) return "casas"; // Salvaguarda por si el archivo está vacío
         ArrayList<String> lista = new ArrayList<>(palabras);
         Collections.shuffle(lista);
         return lista.get(0);
     }
 
     public String comprobarIntento(String intento) {
-
         intento = intento.toLowerCase();
         String resultado = "";
 
+        // REQUISITO: Colores solicitados (Verde y Amarillo)
         final String VERDE = "\u001B[32m";
-        final String ROJO = "\u001B[31m";
+        final String AMARILLO = "\u001B[33m";
         final String RESET = "\u001B[0m";
 
-        //Dividimos la palabra en una lista de caracteres.
+        // Cada intento consume una vida independientemente de si acierta o falla después
+        vida--;
+
         ArrayList<Character> letrasSecreta = new ArrayList<>();
         for (int i = 0; i < palabraSecreta.length(); i++) {
             letrasSecreta.add(palabraSecreta.charAt(i));
         }
 
-        //Hacemos un array de caracteres para clasificar las letras con colores
         char[] colorLetra = new char[5];
 
-        //Buscamos las verdes
+        // Primera pasada: Detectar los verdes exactos
         for (int i = 0; i < 5; i++) {
             if (intento.charAt(i) == palabraSecreta.charAt(i)) {
                 colorLetra[i] = 'v';
-                letrasSecreta.set(i, null);
+                letrasSecreta.set(i, null); // Consumimos la letra para evitar duplicados amarillos
             }
         }
 
-        //Buscamos rojas o negras
+        // Segunda pasada: Detectar amarillos o grises (no existe)
         for (int i = 0; i < 5; i++) {
-            if (colorLetra[i] == 'v')
-                continue;
+            if (colorLetra[i] == 'v') continue;
 
             char letra = intento.charAt(i);
-
             if (letrasSecreta.contains(letra)) {
-                colorLetra[i] = 'r';
+                colorLetra[i] = 'a'; // Amarillo
+                letrasSecreta.remove((Character) letra); // Consumimos una instancia de la letra
             } else {
-                colorLetra[i] = 'n';
+                colorLetra[i] = 'n'; // No existe
             }
         }
 
-        //Construimos el resultado coloreado
+        // Construcción del String coloreado
         for (int i = 0; i < 5; i++) {
             char letra = intento.charAt(i);
-
             if (colorLetra[i] == 'v') {
-                resultado = resultado + VERDE + letra + RESET;
-            } else if (colorLetra[i] == 'r') {
-                resultado = resultado + ROJO + letra + RESET;
+                resultado += VERDE + letra + RESET;
+            } else if (colorLetra[i] == 'a') {
+                resultado += AMARILLO + letra + RESET;
             } else {
-                resultado = resultado + letra;
+                resultado += letra;
             }
-        }
-
-        if (!intento.equals(palabraSecreta)) {
-            vida--;
         }
 
         return resultado;
     }
-
 }
