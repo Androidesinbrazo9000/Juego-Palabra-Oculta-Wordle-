@@ -1,4 +1,4 @@
-package JuegoWordle;
+package Juego;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.HashSet;
 
 public class Partida implements Serializable {
-    private static final long serialVersionUID = 1L; // Recomendado para Serializable
 
     private String palabraSecreta;
     private int puntuacion = 0;
@@ -56,13 +55,12 @@ public class Partida implements Serializable {
         String[] arrayPalabras;
 
         try {
-            // REQUISITO: Nombre exacto del archivo exigido
             br = new BufferedReader(new FileReader("Palabras5L.txt"));
             String linea = br.readLine();
             if (linea != null) {
                 arrayPalabras = linea.split(",");
                 for (int i = 0; i < arrayPalabras.length; i++) {
-                    palabras.add(arrayPalabras[i].trim().toLowerCase());
+                    palabras.add(arrayPalabras[i].trim());
                 }
             }
         } catch (FileNotFoundException ex) {
@@ -79,7 +77,6 @@ public class Partida implements Serializable {
     }
 
     public String obtenerPalabraSecreta() {
-        if (palabras.isEmpty()) return "casas"; // Salvaguarda por si el archivo está vacío
         ArrayList<String> lista = new ArrayList<>(palabras);
         Collections.shuffle(lista);
         return lista.get(0);
@@ -89,12 +86,10 @@ public class Partida implements Serializable {
         intento = intento.toLowerCase();
         String resultado = "";
 
-        // REQUISITO: Colores solicitados (Verde y Amarillo)
         final String VERDE = "\u001B[32m";
         final String AMARILLO = "\u001B[33m";
         final String RESET = "\u001B[0m";
 
-        // Cada intento consume una vida independientemente de si acierta o falla después
         vida--;
 
         ArrayList<Character> letrasSecreta = new ArrayList<>();
@@ -104,28 +99,25 @@ public class Partida implements Serializable {
 
         char[] colorLetra = new char[5];
 
-        // Primera pasada: Detectar los verdes exactos
         for (int i = 0; i < 5; i++) {
             if (intento.charAt(i) == palabraSecreta.charAt(i)) {
                 colorLetra[i] = 'v';
-                letrasSecreta.set(i, null); // Consumimos la letra para evitar duplicados amarillos
+                letrasSecreta.set(i, null);
             }
         }
 
-        // Segunda pasada: Detectar amarillos o grises (no existe)
         for (int i = 0; i < 5; i++) {
             if (colorLetra[i] == 'v') continue;
 
             char letra = intento.charAt(i);
             if (letrasSecreta.contains(letra)) {
-                colorLetra[i] = 'a'; // Amarillo
-                letrasSecreta.remove((Character) letra); // Consumimos una instancia de la letra
+                colorLetra[i] = 'a';
+                letrasSecreta.remove((Character) letra);
             } else {
-                colorLetra[i] = 'n'; // No existe
+                colorLetra[i] = 'n';
             }
         }
 
-        // Construcción del String coloreado
         for (int i = 0; i < 5; i++) {
             char letra = intento.charAt(i);
             if (colorLetra[i] == 'v') {
